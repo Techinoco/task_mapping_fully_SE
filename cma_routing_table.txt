@@ -1,0 +1,45 @@
+  always @(*) begin
+    case(CONF_SW_NORTH)      
+	  `CONF_NORTH_SW_ALU           : OUT_NORTH <= ALU_OUT;
+      `CONF_NORTH_SW_SOUTH         : OUT_NORTH <= IN_SOUTH;
+      `CONF_NORTH_SW_EAST          : OUT_NORTH <= IN_EAST;
+      `CONF_NORTH_SW_WEST          : OUT_NORTH <= IN_WEST;
+      `CONF_NORTH_SW_DL_S          : OUT_NORTH <= IN_DL_S; 
+      `CONF_NORTH_SW_DL_SE         : OUT_NORTH <= IN_DL_SE; 
+      `CONF_NORTH_SW_DL_SW         : OUT_NORTH <= IN_DL_SW;
+      `CONF_NORTH_SW_CONST         : OUT_NORTH <= IN_CONST_A;
+      default                      : OUT_NORTH <= ALU_OUT;
+	endcase
+  end
+  
+  always @(*) begin
+    case(CONF_SW_SOUTH)
+      `CONF_SOUTH_SW_ALU           : OUT_SOUTH <= ALU_OUT;
+      `CONF_SOUTH_SW_NORTH         : OUT_SOUTH <= IN_NORTH;
+      `CONF_SOUTH_SW_EAST          : OUT_SOUTH <= IN_EAST;
+      `CONF_SOUTH_SW_WEST          : OUT_SOUTH <= IN_WEST;
+      default                      : OUT_SOUTH <= ALU_OUT;
+	endcase
+  end
+  
+  always @(*) begin
+    case(CONF_SW_EAST)
+      `CONF_EAST_SW_ALU            : OUT_EAST  <= ALU_OUT;
+      `CONF_EAST_SW_SOUTH          : OUT_EAST  <= IN_SOUTH;
+      `CONF_EAST_SW_WEST           : OUT_EAST  <= IN_WEST;
+      `CONF_EAST_SW_DL_S           : OUT_EAST  <= IN_DL_S;
+      `CONF_EAST_SW_DL_SW          : OUT_EAST  <= IN_DL_SW;
+      default                      : OUT_EAST  <= ALU_OUT;
+    endcase
+  end
+  
+  always @(*) begin
+    case(CONF_SW_WEST)
+      `CONF_WEST_SW_SOUTH          : OUT_WEST  <= IN_SOUTH;
+      `CONF_WEST_SW_EAST           : OUT_WEST  <= IN_EAST;
+      `CONF_WEST_SW_DL_S           : OUT_WEST  <= IN_DL_S;
+      `CONF_WEST_SW_DL_SE          : OUT_WEST  <= IN_DL_SE;
+      default                      : OUT_WEST  <= IN_SOUTH;
+    endcase
+  end
+

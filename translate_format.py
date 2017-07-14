@@ -1,6 +1,10 @@
 from moga_taskmapping_bbdlp import *
 from data_formatting import rootsinks_filter
 from re import findall
+
+PE_HEAD = "100000_0000000_1111__"
+SE_HEAD = "100001_00000__"
+
 def translate_format(alu_config, se_config, const_config, file_path):
     """
     translate format of configurations to generate conf. file
@@ -35,28 +39,39 @@ def translate_format(alu_config, se_config, const_config, file_path):
                 "SW": "101",
                 "CA": "110",
                 "CB": "111"}
-    dict_se_n = {"ALU": "000",
-                 "S": "001",
-                 "E": "010",
-                 "W": "011",
-                 "DS": "100",
-                 "SE": "101",
-                 "SW": "110",
-                 "CONST": "111"}
-    dict_se_s = {"ALU": "00",
-                 "N": "01",
-                 "E": "10",
-                 "W": "11"}
-    dict_se_e = {"ALU": "000",
-                 "S": "001",
-                 "W": "010",
-                 "DS": "011",
-                 "SE": "100",
-                 "SW": "101"}
-    dict_se_w = {"S": "00",
-                 "E": "01",
-                 "DS": "10",
-                 "SE": "11"}
+# CONST_Bはまだ
+    dict_se_n = {"ALU": "0000",
+                 "S": "0001",
+                 "E": "0010",
+                 "W": "0011",
+                 "DS": "0100",
+                 "SE": "0101",
+                 "SW": "0110",
+                 "CONST": "0111"}
+    dict_se_e = {"ALU": "0000",
+                 "S": "0001",
+                 "E": "0010",
+                 "W": "0011",
+                 "DS": "0100",
+                 "SE": "0101",
+                 "SW": "0110",
+                 "CONST": "0111"}
+    dict_se_w = {"ALU": "0000",
+                 "S": "0001",
+                 "E": "0010",
+                 "W": "0011",
+                 "DS": "0100",
+                 "SE": "0101",
+                 "SW": "0110",
+                 "CONST": "0111"}
+    dict_se_s = {"ALU": "0000",
+                 "N": "0001",
+                 "E": "0010",
+                 "W": "0011",
+                 "DS": "0100",
+                 "SE": "0101",
+                 "SW": "0110",
+                 "CONST": "0111"}
     constants = {"C_0A": "0000_",
                  "C_1A": "0001_",
                  "C_2A": "0010_",
@@ -89,14 +104,14 @@ def translate_format(alu_config, se_config, const_config, file_path):
     #              "C_5B": "00000000000000000",
     #              "C_6B": "00000000000000000",
     #              "C_7B": "00000000000000000"}
-                 
+
     ## ALU
     Prv = "100000_0000000_1111__1010_000_111__00000001_000100000000\t//\tError\tPre\tVen\tTion"
     Prv8_0 = "100000_0000000_1111__0000_000_000__00000001_000100000000\t//\tALU8_0\tError\tPre\tVention"
     out = "100000_0000000_1111__0000_000_000__11111111_1111111111\t//\tNOP\n"
     f.write(out)
     for pos_alu in alu_config:
-        for_pe = "100000_0000000_1111__"
+        for_pe = PE_HEAD
         instr = alu_config[pos_alu]["instr"]
         for_pe = for_pe + dict_instr.get(instr) + "_"
         for sourceA in alu_config[pos_alu]:
@@ -155,7 +170,7 @@ def translate_format(alu_config, se_config, const_config, file_path):
     #         out = out + column
     #     out = out + '\n'
     #     f.write(out)
-            
+
     ## SE
     for pos_se in se_config:
         numbers = findall(r'[0-9]+', pos_se)
@@ -164,8 +179,8 @@ def translate_format(alu_config, se_config, const_config, file_path):
             num_row = int(numbers[1])
         # num_column = int(pos_se[2:3])
         # num_row = int(pos_se[4:5])
-        for_se = "100001_0000000_0000__"
-        
+        for_se = SE_HEAD
+
         ## North
         in_to_N = str(se_config[pos_se]["N"])
         if in_to_N[0:1] == "A":
@@ -216,7 +231,7 @@ def translate_format(alu_config, se_config, const_config, file_path):
             for_se = for_se + dict_se_n["S"] + "_"
         else:
             for_se = for_se + dict_se_n["ALU"] + "_"
-            
+
         ## South
         in_to_S = str(se_config[pos_se]["S"])
         if in_to_S[0:1] == "A":
@@ -249,7 +264,7 @@ def translate_format(alu_config, se_config, const_config, file_path):
                 return 0
         else:
             for_se = for_se + dict_se_s["ALU"] + "_"
-            
+
         ## East
         in_to_E = str(se_config[pos_se]["E"])
         if in_to_E[0:1] == "A":
@@ -373,7 +388,7 @@ def generate_manipulater_format(sinks, dmani_path, REG_config):
         out = str(sink[0]) + " -> \n"
         f.write(out)
     f.close()
-    
+
 def format_data_manipulater(path_of_file_for_dmani, path_for_output):
     """
     This func. translates format for data manipulater and inputs.
@@ -392,7 +407,7 @@ def format_data_manipulater(path_of_file_for_dmani, path_for_output):
               "0000", "0000", "0000", "0000", "0000", "0000"]
     map_LD = [ "0" for i in range(12) ]
     map_ST = [ "0" for i in range(12) ]
-    
+
     data4LDs = [ [] for i in range(12) ]
     addr4STs = [ [] for i in range(12) ]
     dmem = []
@@ -512,4 +527,4 @@ def format_data_manipulater(path_of_file_for_dmani, path_for_output):
     f.write(for_write)
     f.write('\n')
     f.close()
-    
+

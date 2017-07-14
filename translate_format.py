@@ -2,8 +2,8 @@ from moga_taskmapping_bbdlp import *
 from data_formatting import rootsinks_filter
 from re import findall
 
-PE_HEAD = "100000_0000000_1111__"
-SE_HEAD = "100001_00000__"
+PE_HEAD = "100000_0000000_1111"
+SE_HEAD = "100001_00000"
 
 def translate_format(alu_config, se_config, const_config, file_path):
     """
@@ -111,7 +111,7 @@ def translate_format(alu_config, se_config, const_config, file_path):
     out = "100000_0000000_1111__0000_000_000__11111111_1111111111\t//\tNOP\n"
     f.write(out)
     for pos_alu in alu_config:
-        for_pe = PE_HEAD
+        for_pe = PE_HEAD + "__"
         instr = alu_config[pos_alu]["instr"]
         for_pe = for_pe + dict_instr.get(instr) + "_"
         for sourceA in alu_config[pos_alu]:
@@ -179,7 +179,7 @@ def translate_format(alu_config, se_config, const_config, file_path):
             num_row = int(numbers[1])
         # num_column = int(pos_se[2:3])
         # num_row = int(pos_se[4:5])
-        for_se = SE_HEAD
+        for_se = SE_HEAD + "__"
 
         ## North
         in_to_N = str(se_config[pos_se]["N"])

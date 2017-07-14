@@ -7,12 +7,17 @@ from copy import deepcopy
 from re import findall
 
 max_column = 12
-confp_path,map_path,delay_path,org_path,data_path,dac_path="Ando/data/bitstreams/confp.dat","Ando/data/test.map","Ando/data/delay.tbl","Ando/data/data.org","Ando/data/bitstreams/data.dat.test","Ando/data/bitstreams/dac.conf"
+confp_path = "Ando/data/bitstreams/confp.dat"
+map_path = "Ando/data/test.map"
+delay_path = "Ando/data/delay.tbl"
+org_path = "Ando/data/data.org"
+data_path = "Ando/data/bitstreams/data.dat.test"
+dac_path = "Ando/data/bitstreams/dac.conf"
 MinMax_path = "Ando/data/MinMax.dat"
 
 __,sinks = rootsinks_filter(tasksonly_graph)
 hof_sinks = []
-ALU_usage = [[['1','1','1','1','1','1','1','1'] for i in range(12)] for j in range(len(load_data.hof))] # 1 is unused
+# ALU_usage = [[['1','1','1','1','1','1','1','1'] for i in range(12)] for j in range(len(load_data.hof))] # 1 is unused
 
 def make_sinks():
     for sol in load_data.hof:
@@ -280,9 +285,9 @@ def duplicate_mapping():
 #         load_data.SE_config[sol_num].update(duplicated_SE_config)
 
 def generate(sol_num, num_pr):
-    min_max_delay=generate_confp(load_data.hof[sol_num], load_data.tasks, 
+    min_max_delay=generate_confp(load_data.hof[sol_num], load_data.tasks,
         load_data.tasks_graph, load_data.ALU_config[sol_num],
-        load_data.SE_config[sol_num], load_data.CONST_config[sol_num], 
+        load_data.SE_config[sol_num], load_data.CONST_config[sol_num],
         num_pr, confp_path, map_path, delay_path)
     generate_manipulater_format(hof_sinks[sol_num], org_path, load_data.REG_config[sol_num])
     out = "Write " + org_path + ", and type y"
@@ -305,8 +310,8 @@ def compress_confp():
     ALU_group = {}
     SE_group = {}
     others = []
-    ALU_head = "100000_0000000_1111"
-    SE_head = "100001_0000000_0000"
+    ALU_head = translate_format.PE_HEAD
+    SE_head = translate_format.SE_HEAD
     for line in lines:
         line = line.replace('\n','')
         words = line.split('__')

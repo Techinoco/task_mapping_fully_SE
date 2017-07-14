@@ -1,0 +1,125 @@
+#include <sma64h.h>
+
+[@"C_0L"]int eight   = 8;
+[@"C_0R"]int nigoro  = 255;
+[@"C_1L"]int eight_2 = 8;
+[@"C_1R"]int nigoro_2= 255;
+[@"C_2L"]int alpha_a = 100;
+[@"C_2R"]int alpha_b = 28;
+[@"C_3L"]int alpha_a2= 100;
+[@"C_3R"]int alpha_b2= 28;
+[@"C_4L"]int sft     = 7;
+[@"C_5L"]int eig     = 8;
+[@"C_5R"]int sixt    = 16;
+
+
+int inA,inA2,inB,inB2,inC,inC2;
+int Ar,Ag,Ab,Br,Bg,Bb,Cr,Cg,Cb;
+int A2r,A2g,A2b,B2r,B2g,B2b,C2r,C2g,C2b;
+int Ara,Aga,A2rb,A2gb;
+int Bra,Bga,B2rb,B2gb;
+int Cra,Cga,C2rb,C2gb;
+int Aba,A2bb,Bba,B2bb;
+int Cba,C2bb;
+int alAr,alAg,alBr,alBg,alCr,alCg;
+int alAb,alBb,alCb;
+int alAr2,alAg2,alAb2;
+int alBr2,alBg2,alBb2;
+int alCr2,alCg2,alCb2;
+
+call [inA ] MEM_OUT_00();
+call [inA2] MEM_OUT_02();
+call [inB ] MEM_OUT_04();
+call [inB2] MEM_OUT_06();
+call [inC ] MEM_OUT_08();
+call [inC2] MEM_OUT_10();
+
+
+[@"PE_000"]call [  Ag]  SR  (inA , eight);
+[@"PE_001"]call [  Ab] AND  (inA , nigoro);
+[@"PE_002"]call [ A2g]  SR  (inA2, eight); 
+[@"PE_003"]call [ A2b] AND  (inA2, nigoro);
+[@"PE_004"]call [  Bg]  SR  (inB , eight);
+[@"PE_005"]call [  Bb] AND  (inB , nigoro);
+[@"PE_006"]call [ B2g]  SR  (inB2, eight); 
+[@"PE_007"]call [ B2b] AND  (inB2, nigoro);
+[@"PE_008"]call [  Cg]  SR  (inC , eight);
+[@"PE_009"]call [  Cb] AND  (inC , nigoro);
+[@"PE_010"]call [ C2g]  SR  (inC2, eight); 
+[@"PE_011"]call [ C2b] AND  (inC2, nigoro);
+		      	  
+[@"PE_100"]call [  Ar]  SR  (Ag  , eight);
+[@"PE_101"]call [  Ag] AND  (Ag  , nigoro_2);
+[@"PE_102"]call [ A2r]  SR  (A2g , eight);
+[@"PE_103"]call [ A2g] AND  (A2g , nigoro_2);
+[@"PE_104"]call [  Br]  SR  (Bg  , eight);
+[@"PE_105"]call [  Bg] AND  (Bg  , nigoro_2);
+[@"PE_106"]call [ B2r]  SR  (B2g , eight);
+[@"PE_107"]call [ B2g] AND  (B2g , nigoro_2);
+[@"PE_108"]call [  Cr]  SR  (Cg  , eight);
+[@"PE_109"]call [  Cg] AND  (Cg  , nigoro_2);
+[@"PE_110"]call [ C2r]  SR  (C2g , eight);
+[@"PE_111"]call [ C2g] AND  (C2g , nigoro_2);
+
+[@"PE_200"]calculate  Ara  = Ar   * alpha_a;
+[@"PE_201"]calculate  Aga  = Ag   * alpha_a;
+[@"PE_202"]calculate  A2rb = A2r  * alpha_b;
+[@"PE_203"]calculate  A2gb = A2g  * alpha_b;
+[@"PE_204"]calculate  Bra  = Br   * alpha_a;
+[@"PE_205"]calculate  Bga  = Bg   * alpha_a;
+[@"PE_206"]calculate  B2rb = B2r  * alpha_b;
+[@"PE_207"]calculate  B2gb = B2g  * alpha_b;
+[@"PE_208"]calculate  Cra  = Cr   * alpha_a;
+[@"PE_209"]calculate  Cga  = Cg   * alpha_a;
+[@"PE_210"]calculate  C2rb = C2r  * alpha_b;
+[@"PE_211"]calculate  C2gb = C2g  * alpha_b;
+
+[@"PE_300"]calculate  alAr = Ara  + A2rb    ;
+[@"PE_301"]calculate  Aba  = Ab   * alpha_a2;
+[@"PE_302"]calculate  alAg = Aga  + A2gb    ;
+[@"PE_303"]calculate  A2bb = A2b  * alpha_b2;
+[@"PE_304"]calculate  alBr = Bra  + B2rb    ;
+[@"PE_305"]calculate  Bba  = Bb   * alpha_a2;
+[@"PE_306"]calculate  alBg = Bga  + B2gb    ;
+[@"PE_307"]calculate  B2bb = B2b  * alpha_b2;
+[@"PE_308"]calculate  alCr = Cra  + C2rb    ;
+[@"PE_309"]calculate  Cba  = Cb   * alpha_a2;
+[@"PE_310"]calculate  alCg = Cga  + C2gb    ;
+[@"PE_311"]calculate  C2bb = C2b  * alpha_b2;
+
+[@"PE_400"]call [alAr2] SR  (alAr,  sft  );
+[@"PE_401"]call [alAg2] SR  (alAg,  sft  );
+[@"PE_402"]calculate alAb  = Aba  + A2bb   ;
+[@"PE_404"]call [alBr2] SR  (alBr,  sft  );
+[@"PE_405"]call [alBg2] SR  (alBg,  sft  );
+[@"PE_406"]calculate alBb  = Bba  + B2bb   ;
+[@"PE_408"]call [alCr2] SR  (alCr,  sft  );
+[@"PE_409"]call [alCg2] SR  (alCg,  sft  );
+[@"PE_410"]calculate alCb  = Cba  + C2bb   ;
+
+int alAr3,alAg3,alArg,alphA;
+int alBr3,alBg3,alBrg,alphB;
+int alCr3,alCg3,alCrg,alphC;
+[@"PE_501"]call [alAr3] SL  (alAr2, sixt );
+[@"PE_502"]call [alAg3] SL  (alAg2, eig  );
+[@"PE_503"]call [alAb2] SR  (alAb,  sft  );
+[@"PE_602"]call [alArg] OR  (alAr3, alAg3);
+[@"PE_603"]call [alphA] OR  (alAb2, alArg);
+
+[@"PE_505"]call [alBr3] SL  (alBr2, sixt );
+[@"PE_506"]call [alBg3] SL  (alBg2, eig  );
+[@"PE_507"]call [alBb2] SR  (alBb,  sft  );
+[@"PE_606"]call [alBrg] OR  (alBr3, alBg3);
+[@"PE_607"]call [alphB] OR  (alBb2, alBrg);
+
+[@"PE_509"]call [alCr3] SL  (alCr2, sixt );
+[@"PE_510"]call [alCg3] SL  (alCg2, eig  );
+[@"PE_511"]call [alCb2] SR  (alCb,  sft  );
+[@"PE_610"]call [alCrg] OR  (alCr3, alCg3);
+[@"PE_611"]call [alphC] OR  (alCb2, alCrg);
+
+
+call [ ] MEM_IN_03(alphA);
+call [ ] MEM_IN_07(alphB);
+call [ ] MEM_IN_11(alphC);
+

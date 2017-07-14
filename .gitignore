@@ -245,3 +245,6 @@ Doc/
 
 # Ando
 Ando/data/bitstreams/
+
+# backups
+\#*\#

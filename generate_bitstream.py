@@ -1,7 +1,8 @@
 import load_data
 from math import ceil
 from optimize_pipeline import *
-from translate_format import *
+# from translate_format import *
+import translate_format
 from data_formatting import generate_map_file
 from copy import deepcopy
 from re import findall
@@ -40,7 +41,7 @@ def generate_confp(hof, tasks, graph, alu_config, se_config, const_config, num_p
     generate_map_file(hof, tasks, graph, map_path)
     read_graph(map_path, table_path)
     pr_pos, sub_graphs, min_max_delay = opt_pipeline(vpcma_graph, num_pr)
-    translate_format(alu_config, se_config, const_config, confp_path)
+    translate_format.translate_format(alu_config, se_config, const_config, confp_path)
     add_pipeline_to_confp(pr_pos, confp_path)
     add_EOF_to_confp(confp_path)
     compress_confp()
@@ -64,6 +65,15 @@ def add_pipeline_to_confp(pr_pos, confp_path):
     f.write(out)
 
 def generate_dac(num_pr, data_path, dac_path):
+    """
+    Generates dac.conf.
+
+    args: num_pr, data_path, dac_path
+
+    num_pr: the number of used pipeline registers.
+    data_path: the path to read data.dat, pre-defined in generate_bitstream.py
+    dac_path: the path to write dac.conf, pre-defined in generate_bitstream.py
+    """
     delay = int(num_pr)
     f = open(data_path)
     lines = f.readlines()
@@ -111,41 +121,12 @@ def generate_dac(num_pr, data_path, dac_path):
     f.write(out)
     f.close
 
-
-# def duplicate_ALU():
-#     rightests = []
-#     for i, hof in enumerate(load_data.hof):
-#         rightest = 0
-#         for coord in hof:
-#             if rightest < coord[0]:
-#                 rightest = coord[0]
-#         rightests.append(rightest)
-#     for sol_num, ALU_config_hof in enumerate(load_data.ALU_config):
-#         ALUs = ALU_config_hof.keys()
-#         geta = rightests[sol_num]
-#         geta = geta + 1
-#         first_geta = geta
-#         possibility = int(max_column/geta) - 1
-#         # p_poss = "Geta: " + str(geta) + ", Possibility: " + str(possibility)
-#         # print(p_poss)
-#         duplicated_ALU_config = {}
-#         for i in range(possibility):
-#             p_out = "Geta : " + str(geta)
-#             print(p_out)
-#             tmp_ALU_config = deepcopy(ALU_config_hof)
-#             for ALU in ALUs:
-#                 tmp_config = tmp_ALU_config.pop(ALU)
-#                 tmp_coord = findall(r'[0-9]+', ALU)
-#                 print(ALU)
-#                 # print(tmp_coord)
-#                 tmp_coord[0] = str(int(tmp_coord[0]) + geta)
-#                 tmp_ALU = "ALU" + str(tmp_coord[0]) + "_" + str(tmp_coord[1])
-#                 tmp_ALU_config.update({tmp_ALU:tmp_config})
-#             duplicated_ALU_config.update(tmp_ALU_config)
-#             geta = geta + first_geta
-#         load_data.ALU_config[sol_num].update(duplicated_ALU_config)
-
 def duplicate_mapping():
+    """
+    Duplicates mapping of load_data.ALU_config, load_data.SE_config, and load_data.REG_config with duplicating sinks of hole of fame.
+
+    args: none
+    """
     rightests = []
     for i, hof in enumerate(load_data.hof):
         rightest = 0
@@ -250,53 +231,28 @@ def duplicate_mapping():
             geta = geta + first_geta
         load_data.REG_config[sol_num].update(duplicated_REG_config)
 
-
-# def duplicate_SE():
-#     rightests = []
-#     for i, hof in enumerate(load_data.hof):
-#         rightest = 0
-#         for coord in hof:
-#             if rightest < coord[0]:
-#                 rightest = coord[0]
-#         rightests.append(rightest)
-#     for sol_num, SE_config_hof in enumerate(load_data.SE_config):
-#         SEs = SE_config_hof.keys()
-#         geta = rightests[sol_num]
-#         geta = geta + 1
-#         first_geta = geta
-#         possibility = int(max_column/geta) - 1
-#         # p_poss = "Geta: " + str(geta) + ", Possibility: " + str(possibility)
-#         # print(p_poss)
-#         duplicated_SE_config = {}
-#         for i in range(possibility):
-#             # p_out = "Geta : " + str(geta)
-#             # print(p_out)
-#             tmp_SE_config = deepcopy(SE_config_hof)
-#             for SE in SEs:
-#                 tmp_config = tmp_SE_config.pop(SE)
-#                 tmp_coord = findall(r'[0-9]+', SE)
-#                 print(SE)
-#                 # print(tmp_coord)
-#                 tmp_coord[0] = str(int(tmp_coord[0]) + geta)
-#                 tmp_SE = "SE" + str(tmp_coord[0]) + "_" + str(tmp_coord[1])
-#                 tmp_SE_config.update({tmp_SE:tmp_config})
-#             duplicated_SE_config.update(tmp_SE_config)
-#             geta = geta + first_geta
-#         load_data.SE_config[sol_num].update(duplicated_SE_config)
-
 def generate(sol_num, num_pr):
+    """
+    Generates all of files for configurations, confp.dat, data.dat, and dac.conf.
+    Through filling blanks of data.org, data.dat will be generated.
+
+    args: sol_num, num_pr
+
+    sol_num: solution number of hole of fame (hof).
+    num_pr: the number of used pipeline registers.
+    """
     min_max_delay=generate_confp(load_data.hof[sol_num], load_data.tasks,
         load_data.tasks_graph, load_data.ALU_config[sol_num],
         load_data.SE_config[sol_num], load_data.CONST_config[sol_num],
         num_pr, confp_path, map_path, delay_path)
-    generate_manipulater_format(hof_sinks[sol_num], org_path, load_data.REG_config[sol_num])
+    translate_format.generate_manipulater_format(hof_sinks[sol_num], org_path, load_data.REG_config[sol_num])
     out = "Write " + org_path + ", and type y"
     print(out)
     while True:
         y_n = input('>> ')
         if y_n == "y":
             break
-    format_data_manipulater(org_path, data_path)
+    translate_format.format_data_manipulater(org_path, data_path)
     generate_dac(num_pr, org_path, dac_path)
     p_out = "#####\nMinimum Max delay: " + str(ceil(min_max_delay)) + "\n#####\n"
     f = open(MinMax_path, 'w')
@@ -304,6 +260,11 @@ def generate(sol_num, num_pr):
     f.close()
 
 def compress_confp():
+    """
+    Compresses confp.dat when multiple PEs (ALUs with SELs) and SEs have the same functionality.
+
+    args: none
+    """
     f = open(confp_path, 'r')
     lines = f.readlines()
     f.close()

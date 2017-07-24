@@ -47,7 +47,8 @@ def translate_format(alu_config, se_config, const_config, file_path):
                  "DS": "0100",
                  "SE": "0101",
                  "SW": "0110",
-                 "CONST": "0111"}
+                 "CONST": "0111",
+                 "NONE": "1111"}
     dict_se_e = {"ALU": "0000",
                  "S": "0001",
                  "E": "0010",
@@ -55,7 +56,8 @@ def translate_format(alu_config, se_config, const_config, file_path):
                  "DS": "0100",
                  "SE": "0101",
                  "SW": "0110",
-                 "CONST": "0111"}
+                 "CONST": "0111",
+                 "NONE": "1111"}
     dict_se_w = {"ALU": "0000",
                  "S": "0001",
                  "E": "0010",
@@ -63,7 +65,8 @@ def translate_format(alu_config, se_config, const_config, file_path):
                  "DS": "0100",
                  "SE": "0101",
                  "SW": "0110",
-                 "CONST": "0111"}
+                 "CONST": "0111",
+                 "NONE": "1111"}
     dict_se_s = {"ALU": "0000",
                  "N": "0001",
                  "E": "0010",
@@ -71,7 +74,8 @@ def translate_format(alu_config, se_config, const_config, file_path):
                  "DS": "0100",
                  "SE": "0101",
                  "SW": "0110",
-                 "CONST": "0111"}
+                 "CONST": "0111",
+                 "NONE": "1111"}
     constants = {"C_0A": "0000_",
                  "C_1A": "0001_",
                  "C_2A": "0010_",
@@ -230,7 +234,7 @@ def translate_format(alu_config, se_config, const_config, file_path):
         elif in_to_N[0:1] == "R":
             for_se = for_se + dict_se_n["S"] + "_"
         else:
-            for_se = for_se + dict_se_n["ALU"] + "_"
+            for_se = for_se + dict_se_n["NONE"] + "_"
 
         ## South
         in_to_S = str(se_config[pos_se]["S"])
@@ -263,7 +267,7 @@ def translate_format(alu_config, se_config, const_config, file_path):
                 print("invalid SE position", se_config[pos_se]["S"], "for South port of", pos_se)
                 return 0
         else:
-            for_se = for_se + dict_se_s["ALU"] + "_"
+            for_se = for_se + dict_se_s["NONE"] + "_"
 
         ## East
         in_to_E = str(se_config[pos_se]["E"])
@@ -300,7 +304,7 @@ def translate_format(alu_config, se_config, const_config, file_path):
                 print("invalid SE position", se_config[pos_se]["E"], "for East port of", pos_se)
                 return 0
         else:
-            for_se = for_se + dict_se_e["ALU"] + "_"
+            for_se = for_se + dict_se_e["NONE"] + "_"
 
         # West
         in_to_W = str(se_config[pos_se]["W"])
@@ -333,7 +337,7 @@ def translate_format(alu_config, se_config, const_config, file_path):
                 print("invalid SE position", se_config[pos_se]["W"], "for West port of", pos_se)
                 return 0
         else:
-            for_se = for_se + dict_se_w["S"] + "_"
+            for_se = for_se + dict_se_w["NONE"] + "_"
 
         for_se = for_se + "_"
 
